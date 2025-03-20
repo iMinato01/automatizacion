@@ -14,7 +14,7 @@ public class Evaluation {
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
-    private LocalDate currentDate;
+    private LocalDate evaluationtDate;
     private LocalDate nextEvaluation;
     @ElementCollection
     private List<Integer> generalData;
@@ -25,9 +25,9 @@ public class Evaluation {
     @ElementCollection
     private List<Integer> warrantyData;
     public Evaluation(){}
-    public Evaluation(Supplier supplier, LocalDate currentDate, LocalDate nextEvaluation, List<Integer> generalData, List<Boolean> qualityData, List<Integer> timeData, List<Integer> warrantyData){
+    public Evaluation(Supplier supplier, LocalDate evaluationDate, LocalDate nextEvaluation, List<Integer> generalData, List<Boolean> qualityData, List<Integer> timeData, List<Integer> warrantyData){
         this.supplier = supplier;
-        this.currentDate = currentDate;
+        this.evaluationtDate = evaluationDate;
         this.nextEvaluation = nextEvaluation;
         this.generalData = generalData;
         this.qualityData = qualityData;
@@ -51,12 +51,12 @@ public class Evaluation {
         this.supplier = supplier;
     }
 
-    public LocalDate getCurrentDate() {
-        return currentDate;
+    public LocalDate getEvaluationtDate() {
+        return evaluationtDate;
     }
 
-    public void setCurrentDate(LocalDate currentDate) {
-        this.currentDate = currentDate;
+    public void setEvaluationtDate(LocalDate evaluationtDate) {
+        this.evaluationtDate = evaluationtDate;
     }
 
     public LocalDate getNextEvaluation() {

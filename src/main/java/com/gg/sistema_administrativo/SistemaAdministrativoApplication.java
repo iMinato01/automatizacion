@@ -8,6 +8,6 @@ public class SistemaAdministrativoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SistemaAdministrativoApplication.class, args);
-	}
 
+	}
 }
