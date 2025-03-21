@@ -1,6 +1,7 @@
 package com.gg.sistema_administrativo.controller;
 
 import com.gg.sistema_administrativo.dto.ContractCreateDTO;
+import com.gg.sistema_administrativo.dto.ContractUpdateDTO;
 import com.gg.sistema_administrativo.model.Contract;
 import com.gg.sistema_administrativo.service.ContractService;
 import jakarta.validation.Valid;
@@ -41,12 +42,14 @@ public class ContractController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Contract> addContract(@Valid @RequestBody ContractCreateDTO contractCreateDTO){
-        Contract contract = contractService.add(contractCreateDTO);
-        if(contract != null){
+    public ResponseEntity<Contract> addContract(@Valid @RequestBody ContractCreateDTO contractDTO){
+        Contract contract = contractService.add(contractDTO);
             return ResponseEntity.ok(contract);
-        } else{
-            return ResponseEntity.badRequest().build();
-        }
+    }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Contract> updateContract(@PathVariable long id, @Valid @RequestBody ContractUpdateDTO contractUpdateDTO){
+        Contract contract = contractService.update(id, contractUpdateDTO);
+        return ResponseEntity.ok(contract);
     }
 }
