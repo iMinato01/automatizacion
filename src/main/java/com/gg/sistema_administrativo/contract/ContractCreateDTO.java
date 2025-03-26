@@ -1,4 +1,4 @@
-package com.gg.sistema_administrativo.dto;
+package com.gg.sistema_administrativo.contract;
 
 import jakarta.validation.constraints.NotBlank;
 

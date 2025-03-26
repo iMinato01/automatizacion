@@ -1,11 +1,6 @@
-package com.gg.sistema_administrativo.controller;
+package com.gg.sistema_administrativo.contract;
 
-import com.gg.sistema_administrativo.dto.ContractCreateDTO;
-import com.gg.sistema_administrativo.dto.ContractUpdateDTO;
-import com.gg.sistema_administrativo.model.Contract;
-import com.gg.sistema_administrativo.service.ContractService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +9,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/contract")
 public class ContractController {
-    @Autowired
-    ContractService contractService;
+    private final ContractService contractService;
+    public ContractController(ContractService contractService){
+        this.contractService = contractService;
+    }
     @GetMapping("/all")
     public ResponseEntity<List<Contract>> getAll(){
             return ResponseEntity.status(200).body(contractService.getAll());
@@ -24,11 +21,7 @@ public class ContractController {
     @GetMapping("/byId/{id}")
     public ResponseEntity<Contract> getById(@PathVariable long id){
         Contract contract = contractService.getById(id);
-        if(contract != null){
-            return ResponseEntity.status(200).body(contract);
-        } else{
-            return ResponseEntity.status(404).build();
-        }
+        return contract != null ? ResponseEntity.status(200).body(contract): ResponseEntity.status(404).build();
     }
 
     @GetMapping("/byName/{name}")

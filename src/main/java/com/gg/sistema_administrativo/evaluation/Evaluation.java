@@ -1,9 +1,9 @@
-package com.gg.sistema_administrativo.model;
+package com.gg.sistema_administrativo.evaluation;
 
+import com.gg.sistema_administrativo.supplier.Supplier;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity

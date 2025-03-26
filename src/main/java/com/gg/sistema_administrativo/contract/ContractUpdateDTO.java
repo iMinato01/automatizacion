@@ -1,12 +1,14 @@
-package com.gg.sistema_administrativo.dto;
+package com.gg.sistema_administrativo.contract;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import jdk.jfr.BooleanFlag;
 
 public class ContractUpdateDTO {
     @NotNull(message = "El nombre no puede estar vacío")
     private String name;
     @NotNull(message = "El status no puede estar vacío")
+    @BooleanFlag
     private boolean status;
     @NotNull(message = "El monto no puede estar vacío")
     @DecimalMin(value = "0.0", message = "El valor debe ser número positivo")

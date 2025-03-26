@@ -1,4 +1,4 @@
-package com.gg.sistema_administrativo.model;
+package com.gg.sistema_administrativo.utils;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,4 +1,4 @@
-package com.gg.sistema_administrativo.model;
+package com.gg.sistema_administrativo.exception;
 
 public class ErrorResponse {
     private String error;

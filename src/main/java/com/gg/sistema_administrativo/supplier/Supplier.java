@@ -1,5 +1,6 @@
-package com.gg.sistema_administrativo.model;
+package com.gg.sistema_administrativo.supplier;
 
+import com.gg.sistema_administrativo.evaluation.Evaluation;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
