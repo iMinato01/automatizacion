@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface ContractRepository extends JpaRepository<Contract, Long> {
     List<Contract> findByNameContaining(String name);
     Optional<Contract> findByName(String name);
-    List<Contract> findAllByName(String name);
+    boolean existsByName(String name);
     List<Contract> findByStatus(boolean status);
 }

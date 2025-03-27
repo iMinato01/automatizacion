@@ -47,29 +47,41 @@ public class ContractService {
 
     public Contract update(long id, ContractUpdateDTO contractUpdateDTO){
         Contract contract = contractRepository.findById(id).orElseThrow(() -> new ContractNotFoundException("No se encontró el contrato ID " + id));
-        boolean updated = false;
-        if(!contract.getName().equals(contractUpdateDTO.getName())){
-            if(!contractRepository.findAllByName(contractUpdateDTO.getName()).isEmpty()) {
-                throw new PropertyAlreadyInUseException("El nombre " + contractUpdateDTO.getName() + " ya está en uso por otro contrato");
-            } else {
-                contract.setName(contractUpdateDTO.getName());
-                updated = true;
-            }
-        }
-        if(contract.isStatus() != (contractUpdateDTO.isStatus())){
-            contract.setStatus(contractUpdateDTO.isStatus());
-            updated = true;
-        }
-        if(contract.getTotalExpenses() != contractUpdateDTO.getTotalExpenses()){
-            contract.setTotalExpenses(contractUpdateDTO.getTotalExpenses());
-            updated = true;
-        }
-        if(updated){
+        if(nameUpdated(contract, contractUpdateDTO) || statusUpdated(contract, contractUpdateDTO) || totalExpensesUpdated(contract, contractUpdateDTO)){
             Contract savedContract = contractRepository.save(contract);
             logRepository.save(new Log("USUARIO ACTUALIZADO", "Se actualizó el usuario ID -> " + savedContract.getId(), 0));
             return savedContract;
         } else {
             return contract;
         }
+    }
+    public boolean nameUpdated(Contract contract, ContractUpdateDTO contractUpdateDTO){
+        String newName = contractUpdateDTO.getName();
+        String oldName = contract.getName();
+        if(!newName.equals(oldName)){
+            if(contractRepository.existsByName(newName)){
+                throw new PropertyAlreadyInUseException("El nombre \""+ newName + "\" ya se encuentra en uso por otro contrato");
+            } else{
+                contract.setName(newName);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean statusUpdated(Contract contract, ContractUpdateDTO contractUpdateDTo){
+        if(contract.isStatus() != contractUpdateDTo.isStatus()){
+            contract.setStatus(contractUpdateDTo.isStatus());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean totalExpensesUpdated(Contract contract, ContractUpdateDTO contractUpdateDTo){
+        if(contract.getTotalExpenses() != contractUpdateDTo.getTotalExpenses()){
+            contract.setTotalExpenses(contractUpdateDTo.getTotalExpenses());
+            return true;
+        }
+        return false;
     }
 }
