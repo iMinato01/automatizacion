@@ -1,14 +1,13 @@
 package com.gg.sistema_administrativo.contract;
 
-import com.gg.sistema_administrativo.exception.ContractAlreadyExistsException;
-import com.gg.sistema_administrativo.exception.ContractNotFoundException;
+import com.gg.sistema_administrativo.exception.EntityAlreadyExistsException;
+import com.gg.sistema_administrativo.exception.EntityNotFoundException;
 import com.gg.sistema_administrativo.exception.PropertyAlreadyInUseException;
 import com.gg.sistema_administrativo.utils.Log;
 import com.gg.sistema_administrativo.utils.LogRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ContractService {
@@ -23,7 +22,7 @@ public class ContractService {
     }
 
     public Contract getById(long id){
-        return contractRepository.findById(id).orElseThrow(()-> new ContractNotFoundException("No se encontró el contrato ID -> " + id));
+        return contractRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("No se encontró el contrato ID -> " + id));
     }
 
     public List<Contract> getAllByName(String name){
@@ -31,7 +30,7 @@ public class ContractService {
     }
 
     public Contract getByName(String name){
-        return contractRepository.findByName(name).orElseThrow(()-> new ContractNotFoundException("No se encontró el usuario con nombre -> " + name));
+        return contractRepository.findByName(name).orElseThrow(()-> new EntityNotFoundException("No se encontró el usuario con nombre -> " + name));
     }
 
     public List<Contract> getByStatus(boolean status){
@@ -39,15 +38,17 @@ public class ContractService {
     }
 
     public Contract add(ContractCreateDTO contractCreateDTO){
-        if(contractRepository.findByName(contractCreateDTO.getName()).isPresent()){
-            throw new ContractAlreadyExistsException("El contrato " + contractCreateDTO.getName() + " ya existe");
+        if(contractRepository.existsByName(contractCreateDTO.getName())){
+            throw new EntityAlreadyExistsException("El contrato " + contractCreateDTO.getName() + " ya existe");
         }
-        return contractRepository.save(new Contract(contractCreateDTO.getName()));
+        Contract contract = contractRepository.save(new Contract(contractCreateDTO.getName()));
+        logRepository.save(new Log("CONTRATO AGREGADO", "Se agregó el contrato con ID -> " + contract.getId(), 0));
+        return contract;
     }
 
     public Contract update(long id, ContractUpdateDTO contractUpdateDTO){
-        Contract contract = contractRepository.findById(id).orElseThrow(() -> new ContractNotFoundException("No se encontró el contrato ID " + id));
-        if(nameUpdated(contract, contractUpdateDTO) || statusUpdated(contract, contractUpdateDTO) || totalExpensesUpdated(contract, contractUpdateDTO)){
+        Contract contract = contractRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No se encontró el contrato ID " + id));
+        if(isNameUpdated(contract, contractUpdateDTO) || isStatusUpdated(contract, contractUpdateDTO) || isTotalExpensesUpdated(contract, contractUpdateDTO)){
             Contract savedContract = contractRepository.save(contract);
             logRepository.save(new Log("USUARIO ACTUALIZADO", "Se actualizó el usuario ID -> " + savedContract.getId(), 0));
             return savedContract;
@@ -55,12 +56,12 @@ public class ContractService {
             return contract;
         }
     }
-    public boolean nameUpdated(Contract contract, ContractUpdateDTO contractUpdateDTO){
+    public boolean isNameUpdated(Contract contract, ContractUpdateDTO contractUpdateDTO){
         String newName = contractUpdateDTO.getName();
         String oldName = contract.getName();
         if(!newName.equals(oldName)){
             if(contractRepository.existsByName(newName)){
-                throw new PropertyAlreadyInUseException("El nombre \""+ newName + "\" ya se encuentra en uso por otro contrato");
+                throw new PropertyAlreadyInUseException("El nombre '"+ newName + "' ya se encuentra en uso por otro contrato");
             } else{
                 contract.setName(newName);
                 return true;
@@ -69,7 +70,7 @@ public class ContractService {
         return false;
     }
 
-    public boolean statusUpdated(Contract contract, ContractUpdateDTO contractUpdateDTo){
+    public boolean isStatusUpdated(Contract contract, ContractUpdateDTO contractUpdateDTo){
         if(contract.isStatus() != contractUpdateDTo.isStatus()){
             contract.setStatus(contractUpdateDTo.isStatus());
             return true;
@@ -77,7 +78,7 @@ public class ContractService {
         return false;
     }
 
-    public boolean totalExpensesUpdated(Contract contract, ContractUpdateDTO contractUpdateDTo){
+    public boolean isTotalExpensesUpdated(Contract contract, ContractUpdateDTO contractUpdateDTo){
         if(contract.getTotalExpenses() != contractUpdateDTo.getTotalExpenses()){
             contract.setTotalExpenses(contractUpdateDTo.getTotalExpenses());
             return true;

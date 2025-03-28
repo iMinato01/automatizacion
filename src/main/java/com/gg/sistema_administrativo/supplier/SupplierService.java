@@ -9,8 +9,12 @@ import java.util.List;
 
 @Service
 public class SupplierService {
+    private final SupplierRepository supplierRepository;
+    public SupplierService(SupplierRepository supplierRepository){
+        this.supplierRepository = supplierRepository;
+    }
     public List<Supplier> getAll(){
-        return null;
+        return supplierRepository.findAll();
     }
 
     public Supplier getById(long id){
